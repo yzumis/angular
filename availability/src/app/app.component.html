@@ -1,0 +1,11 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+<input type="text" [(ngModel)]="inputValue" (input)="filter(inputValue)">
+<ul>
+    <li *ngFor="let item of filteredItems;">
+      <div>
+        <p>{{item}}</p>
+        <button (click)="addToCart(item)">Add to card</button>
+      </div>
+    </li>
+ </ul>
