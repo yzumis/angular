@@ -3,12 +3,11 @@ import { Observable, Subscriber, Subject } from 'rxjs';
 import { from, } from 'rxjs';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.css']
 })
-export class AppComponent implements OnInit {
-  title = 'availability';
+export class ListComponent implements OnInit {
 
   private subject: Subject<string>;
   inputValue: string;
@@ -21,12 +20,6 @@ export class AppComponent implements OnInit {
     this.filteredItems = this.items;
     this.subject = new Subject<string>();
     window["cartEventsObservable"] = this.subject.asObservable();
-    this.createSubscriptionToCartEventsObservable();
-  }
-
-  createSubscriptionToCartEventsObservable() {
-    var observable: Observable<string> = window["cartEventsObservable"];
-    observable.subscribe(next => this.eventSubscribtionObservable());
   }
 
   filter(inputValue: string) {
@@ -35,7 +28,6 @@ export class AppComponent implements OnInit {
   
   addToCart(item: string) {
     this.addToLocalStorage(item);
-    this.generateWindowCustomEvent(item);
     this.generateCommunicationsBusEvent(item);
   }
 
@@ -48,26 +40,9 @@ export class AppComponent implements OnInit {
     }
     localStorage.setItem('cart', cartValue);
   }
-  
-  generateWindowCustomEvent(item: string) {
-    console.log("generateWindowCustomEvent");
-    var addToCartEvent: CustomEvent = new CustomEvent('addToCartEvent');
-    window.dispatchEvent(addToCartEvent);
-  }
 
   generateCommunicationsBusEvent(item: string) {
-    console.log("generateCommunicationsBusEvent");
-    this.subject.next("addToCartEvent");
+    this.subject.next(item);
   }
 
-
-  @HostListener('window:addToCartEvent')
-  eventSubscribtionWindow() {
-    window.alert("Received event from window custom event");
-  }
-
-  eventSubscribtionObservable() {
-    window.alert("Received event from observable object");
-  }
-  
 }
